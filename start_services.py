@@ -3,7 +3,7 @@
 start_services.py
 
 This script starts the Supabase stack first, waits for it to initialize, and then starts
-the local AI stack. Both stacks use the same Docker Compose project name ("SmartKitLM")
+the local AI stack. Both stacks use the same Docker Compose project name ("smart-kit-lm")
 so they appear together in Docker Desktop.
 """
 
@@ -45,11 +45,11 @@ def prepare_supabase_env():
     shutil.copyfile(env_example_path, env_path)
 
 def stop_existing_containers():
-    """Stop and remove existing containers for our unified project ('SmartKitLM')."""
-    print("Stopping and removing existing containers for the unified project 'SmartKitLM'...")
+    """Stop and remove existing containers for our unified project ('smart-kit-lm')."""
+    print("Stopping and removing existing containers for the unified project 'smart-kit-lm'...")
     run_command([
         "docker", "compose",
-        "-p", "smartkitlm",
+        "-p", "smart-kit-lm",
         "-f", "docker-compose.yml",
         "-f", "supabase/docker/docker-compose.yml",
         "down"
@@ -59,13 +59,13 @@ def start_supabase():
     """Start the Supabase services (using its compose file)."""
     print("Starting Supabase services...")
     run_command([
-        "docker", "compose", "-p", "smartkitlm", "-f", "supabase/docker/docker-compose.yml", "up", "-d"
+        "docker", "compose", "-p", "smart-kit-lm", "-f", "supabase/docker/docker-compose.yml", "up", "-d"
     ])
 
 def start_local_ai(profile=None):
     """Start the local AI services (using its compose file)."""
     print("Starting local AI services...")
-    cmd = ["docker", "compose", "-p", "smartkitlm"]
+    cmd = ["docker", "compose", "-p", "smart-kit-lm"]
     if profile and profile != "none":
         cmd.extend(["--profile", profile])
     cmd.extend(["-f", "docker-compose.yml", "up", "-d"])
