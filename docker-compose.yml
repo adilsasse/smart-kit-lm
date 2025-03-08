@@ -73,7 +73,7 @@ services:
     entrypoint: /bin/sh
     command:
       - "-c"
-      - "n8n import:credentials --separate --input=/backup/credentials && n8n import:workflow --separate --input=/backup/workflows"
+      - "n8n import:credentials --separate --input=/backup/credentials"
     volumes:
       - ./n8n/backup:/backup  
 
