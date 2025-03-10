@@ -13,6 +13,18 @@ import shutil
 import time
 import argparse
 
+def detect_gpu():
+    """Automatically detects the presence of a GPU and returns the appropriate profile."""
+    if shutil.which("nvidia-smi"):
+        print("✅ NVIDIA GPU detected")
+        return "gpu-nvidia"
+    elif os.path.exists("/dev/kfd"):
+        print("✅ AMD GPU detected")
+        return "gpu-amd"
+    else:
+        print("⚠️ No GPU detected, using CPU")
+        return "cpu"
+
 def run_command(cmd, cwd=None):
     """Run a shell command and print it."""
     print("Running:", " ".join(cmd))
@@ -73,23 +85,26 @@ def start_local_ai(profile=None):
 
 def main():
     parser = argparse.ArgumentParser(description='Start the local AI and Supabase services.')
-    parser.add_argument('--profile', choices=['cpu', 'gpu-nvidia', 'gpu-amd', 'none'], default='cpu',
-                      help='Profile to use for Docker Compose (default: cpu)')
+    parser.add_argument('--profile', choices=['cpu', 'gpu-nvidia', 'gpu-amd', 'none'], default=None,
+                        help='Profile to use for Docker Compose (default: auto-detect)')
     args = parser.parse_args()
+
+    # Automatic detection if no profile is provided
+    profile = args.profile if args.profile else detect_gpu()
 
     clone_supabase_repo()
     prepare_supabase_env()
     stop_existing_containers()
-    
+
     # Start Supabase first
     start_supabase()
-    
-    # Give Supabase some time to initialize
-    print("Waiting for Supabase to initialize...")
+
+    # Wait for Supabase to initialize
+    print("⌛ Waiting for Supabase to initialize...")
     time.sleep(10)
-    
-    # Then start the local AI services
-    start_local_ai(args.profile)
+
+    # Then, start the AI services
+    start_local_ai(profile)
 
 if __name__ == "__main__":
     main()
