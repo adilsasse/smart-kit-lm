@@ -2,7 +2,7 @@ volumes:
   n8n_storage:
   ollama_storage:
   qdrant_storage:
-  open-webui:
+  smart-kit-ui:
   flowise:
 
 x-n8n: &service-n8n
@@ -58,16 +58,16 @@ services:
         - ~/.flowise:/root/.flowise
     entrypoint: /bin/sh -c "sleep 3; flowise start"
 
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
+  smart-kit-ui:
+    image: adilsasse/smart-kit-ui:latest
     restart: unless-stopped
-    container_name: open-webui
+    container_name: smart-kit-ui
     ports:
       - "3000:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - open-webui:/app/backend/data
+      - smart-kit-ui:/app/backend/data
 
   n8n-import:
     <<: *service-n8n
